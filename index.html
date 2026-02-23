@@ -160,18 +160,8 @@ button:hover{
 </div>
 
 <script>
+
 function saveEntry(){
-  function deleteEntry(index){
-  if(!confirm("Diesen Eintrag wirklich entfernen?")) return;
-
-  let data = JSON.parse(localStorage.getItem("kinkyLog")) || [];
-  data.splice(index,1);
-  localStorage.setItem("kinkyLog", JSON.stringify(data));
-  renderEntries();
-
-  toast.innerText="✨ Entfernt. ✨";
-  setTimeout(()=>toast.innerText="",2000);
-}
   const entry = {
     time: new Date().toLocaleString(),
     came: came.checked,
@@ -200,6 +190,19 @@ function saveEntry(){
   note.value="";
 
   renderEntries();
+}
+
+function deleteEntry(index){
+  if(!confirm("Diesen Eintrag wirklich entfernen?")) return;
+
+  let data = JSON.parse(localStorage.getItem("kinkyLog")) || [];
+  data.splice(index,1);
+  localStorage.setItem("kinkyLog", JSON.stringify(data));
+
+  renderEntries();
+
+  toast.innerText="✨ Entfernt. ✨";
+  setTimeout(()=>toast.innerText="",2000);
 }
 
 function renderEntries(){
@@ -233,42 +236,19 @@ function renderEntries(){
     container.appendChild(div);
   });
 }
-  const container = document.getElementById("entries");
-  container.innerHTML="";
-  const data = JSON.parse(localStorage.getItem("kinkyLog")) || [];
-
-  data.forEach(e=>{
-    const div = document.createElement("div");
-    div.className="entry";
-
-    div.innerHTML = `
-      <div class="timestamp">${e.time}</div>
-      ${e.came ? "✨ Orgasmus<br>" : ""}
-      ${e.licked ? "Abgeleckt<br>" : ""}
-      ${e.wiped ? "Weggewischt<br>" : ""}
-      ${e.dried ? "Trocknen lassen<br>" : ""}
-      ${e.nsUsed ? "💦 NS verwendet<br>" : ""}
-      ${e.nsDrank ? "NS getrunken<br>" : ""}
-      ${e.nsHair ? "NS Haare<br>" : ""}
-      ${e.nsSkin ? "NS Haut<br>" : ""}
-      ${e.analType ? "🍑 " + e.analType + "<br>" : ""}
-      ${e.analSize ? "Größe: " + e.analSize + "<br>" : ""}
-      ${e.analDuration ? "Dauer: " + e.analDuration + "<br>" : ""}
-      ${e.note ? "📝 " + e.note : ""}
-    `;
-    container.appendChild(div);
-  });
-}
 
 function clearAll(){
   if(!confirm("Wirklich ALLE Einträge löschen?")) return;
+
   localStorage.removeItem("kinkyLog");
   renderEntries();
+
   toast.innerText="✨ Weg. ✨";
   setTimeout(()=>toast.innerText="",2000);
 }
-  
+
 renderEntries();
+
 </script>
 
 </body>
