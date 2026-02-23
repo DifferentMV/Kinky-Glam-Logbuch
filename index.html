@@ -147,6 +147,9 @@ button:hover{
 </div>
 
 <button onclick="saveEntry()">Eintrag speichern</button>
+<button onclick="clearAll()" style="margin-top:10px;background:linear-gradient(90deg,#444,#222);box-shadow:none;border:1px solid #333;">
+  Einträge löschen
+</button>
 
 <div class="toast" id="toast"></div>
 
@@ -216,6 +219,14 @@ function renderEntries(){
   });
 }
 
+function clearAll(){
+  if(!confirm("Wirklich ALLE Einträge löschen?")) return;
+  localStorage.removeItem("kinkyLog");
+  renderEntries();
+  toast.innerText="✨ Weg. ✨";
+  setTimeout(()=>toast.innerText="",2000);
+}
+  
 renderEntries();
 </script>
 
