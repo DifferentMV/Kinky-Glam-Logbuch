@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinky Glam Logbuch</title>
+
+<style>
+:root{
+  --bg:#0a0a0f;
+  --panel:#11111a;
+  --accent1:#ff2f92;
+  --accent2:#00f0ff;
+  --accent3:#b300ff;
+  --text:#f4f4f8;
+  --muted:#9999aa;
+}
+
+body{
+  margin:0;
+  background:radial-gradient(circle at 20% 10%, rgba(255,47,146,.15), transparent 40%),
+             radial-gradient(circle at 80% 90%, rgba(0,240,255,.15), transparent 40%),
+             var(--bg);
+  font-family:system-ui, -apple-system, sans-serif;
+  color:var(--text);
+}
+
+.wrap{
+  max-width:720px;
+  margin:40px auto;
+  padding:20px;
+}
+
+h1{
+  text-align:center;
+  font-weight:600;
+  letter-spacing:2px;
+  color:var(--accent1);
+  text-shadow:0 0 12px rgba(255,47,146,.6);
+}
+
+.card{
+  background:var(--panel);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:25px;
+  box-shadow:0 0 25px rgba(179,0,255,.15);
+}
+
+.section-title{
+  font-weight:600;
+  margin-bottom:12px;
+  color:var(--accent2);
+  text-shadow:0 0 10px rgba(0,240,255,.6);
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  cursor:pointer;
+}
+
+input[type="text"], textarea{
+  width:100%;
+  background:#1a1a25;
+  border:none;
+  border-radius:10px;
+  padding:10px;
+  color:white;
+  margin-bottom:10px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  background:linear-gradient(90deg,var(--accent1),var(--accent3));
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:600;
+  color:white;
+  cursor:pointer;
+  box-shadow:0 0 20px rgba(255,47,146,.5);
+  transition:.2s;
+}
+
+button:hover{
+  transform:scale(1.03);
+  box-shadow:0 0 30px rgba(255,47,146,.8);
+}
+
+.entry{
+  background:#141420;
+  padding:15px;
+  border-radius:14px;
+  margin-bottom:15px;
+  border-left:4px solid var(--accent1);
+}
+
+.timestamp{
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.toast{
+  text-align:center;
+  margin-top:15px;
+  color:var(--accent2);
+  font-weight:600;
+  text-shadow:0 0 10px rgba(0,240,255,.7);
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<h1>✨ Kinky Glam Logbuch ✨</h1>
+
+<div class="card">
+<div class="section-title">✨ ORGASMUS ✨</div>
+<label><input type="checkbox" id="came"> Gekommen</label>
+<label><input type="checkbox" id="licked"> Abgeleckt</label>
+<label><input type="checkbox" id="wiped"> Weggewischt</label>
+<label><input type="checkbox" id="dried"> Trocknen lassen</label>
+</div>
+
+<div class="card">
+<div class="section-title">💦 NS 💦</div>
+<label><input type="checkbox" id="nsUsed"> Verwendet</label>
+<label><input type="checkbox" id="nsDrank"> Getrunken</label>
+<label><input type="checkbox" id="nsHair"> Haare</label>
+<label><input type="checkbox" id="nsSkin"> Haut</label>
+</div>
+
+<div class="card">
+<div class="section-title">🍑 ANAL 🍑</div>
+<input type="text" id="analType" placeholder="Typ (Plug, Dildo, Dehnung…)">
+<input type="text" id="analSize" placeholder="Größe (z.B. 6cm)">
+<input type="text" id="analDuration" placeholder="Dauer (z.B. 60 Sekunden)">
+</div>
+
+<div class="card">
+<div class="section-title">📝 Notiz</div>
+<textarea id="note" rows="3" placeholder="Optional…"></textarea>
+</div>
+
+<button onclick="saveEntry()">Eintrag speichern</button>
+
+<div class="toast" id="toast"></div>
+
+<hr style="margin:40px 0;border-color:#222">
+
+<div id="entries"></div>
+
+</div>
+
+<script>
+function saveEntry(){
+  const entry = {
+    time: new Date().toLocaleString(),
+    came: came.checked,
+    licked: licked.checked,
+    wiped: wiped.checked,
+    dried: dried.checked,
+    nsUsed: nsUsed.checked,
+    nsDrank: nsDrank.checked,
+    nsHair: nsHair.checked,
+    nsSkin: nsSkin.checked,
+    analType: analType.value,
+    analSize: analSize.value,
+    analDuration: analDuration.value,
+    note: note.value
+  };
+
+  let data = JSON.parse(localStorage.getItem("kinkyLog")) || [];
+  data.unshift(entry);
+  localStorage.setItem("kinkyLog", JSON.stringify(data));
+
+  toast.innerText="✨ Notiert. ✨";
+  setTimeout(()=>toast.innerText="",2000);
+
+  document.querySelectorAll("input[type=checkbox]").forEach(cb=>cb.checked=false);
+  document.querySelectorAll("input[type=text]").forEach(i=>i.value="");
+  note.value="";
+
+  renderEntries();
+}
+
+function renderEntries(){
+  const container = document.getElementById("entries");
+  container.innerHTML="";
+  const data = JSON.parse(localStorage.getItem("kinkyLog")) || [];
+
+  data.forEach(e=>{
+    const div = document.createElement("div");
+    div.className="entry";
+
+    div.innerHTML = `
+      <div class="timestamp">${e.time}</div>
+      ${e.came ? "✨ Orgasmus<br>" : ""}
+      ${e.licked ? "Abgeleckt<br>" : ""}
+      ${e.wiped ? "Weggewischt<br>" : ""}
+      ${e.dried ? "Trocknen lassen<br>" : ""}
+      ${e.nsUsed ? "💦 NS verwendet<br>" : ""}
+      ${e.nsDrank ? "NS getrunken<br>" : ""}
+      ${e.nsHair ? "NS Haare<br>" : ""}
+      ${e.nsSkin ? "NS Haut<br>" : ""}
+      ${e.analType ? "🍑 " + e.analType + "<br>" : ""}
+      ${e.analSize ? "Größe: " + e.analSize + "<br>" : ""}
+      ${e.analDuration ? "Dauer: " + e.analDuration + "<br>" : ""}
+      ${e.note ? "📝 " + e.note : ""}
+    `;
+    container.appendChild(div);
+  });
+}
+
+renderEntries();
+</script>
+
+</body>
+</html>
